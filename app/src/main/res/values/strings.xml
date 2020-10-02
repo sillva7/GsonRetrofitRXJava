@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Gson, Retrofit, RXJava</string>
+    <string name="name">Name:</string>
+    <string name="last_name">Last Name:</string>
+</resources>
