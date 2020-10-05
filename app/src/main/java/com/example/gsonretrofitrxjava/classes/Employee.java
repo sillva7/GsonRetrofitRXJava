@@ -1,11 +1,22 @@
 package com.example.gsonretrofitrxjava.classes;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
 import java.util.List;
 
+import com.example.gsonretrofitrxjava.Converter.ListConverter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+
+@Entity(tableName = "employees")
+@TypeConverters(value = ListConverter.class)
 public class Employee {
+    @PrimaryKey(autoGenerate = true)
+    int id;
 
     @SerializedName("f_name")
     @Expose
@@ -19,9 +30,19 @@ public class Employee {
     @SerializedName("avatr_url")
     @Expose
     private String avatrUrl;
+
+
     @SerializedName("specialty")
     @Expose
     private List<Specialty> specialty = null;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getFName() {
         return fName;
@@ -63,4 +84,21 @@ public class Employee {
         this.specialty = specialty;
     }
 
+    public Employee(int id, String fName, String lName, String birthday, String avatrUrl, List<Specialty> specialty) {
+        this.id = id;
+        this.fName = fName;
+        this.lName = lName;
+        this.birthday = birthday;
+        this.avatrUrl = avatrUrl;
+        this.specialty = specialty;
+    }
+
+    @Ignore
+    public Employee(String fName, String lName, String birthday, String avatrUrl, List<Specialty> specialty) {
+        this.fName = fName;
+        this.lName = lName;
+        this.birthday = birthday;
+        this.avatrUrl = avatrUrl;
+        this.specialty = specialty;
+    }
 }

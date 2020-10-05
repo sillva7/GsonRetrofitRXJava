@@ -9,9 +9,9 @@ public class Response {
 
     @SerializedName("response")
     @Expose
-    private List<Employee> response = null;
+    private  List<Employee> response = null;
 
-    public List<Employee> getResponse() {
+    public  List<Employee> getEmployees() {
         return response;
     }
 

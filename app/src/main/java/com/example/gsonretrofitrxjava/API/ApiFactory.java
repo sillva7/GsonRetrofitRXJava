@@ -21,7 +21,7 @@ public class ApiFactory {
         if (apiFactory == null) {
             apiFactory = new ApiFactory();
         }
-        return apiFactory;//плохо. т.к. возвращает нуль
+        return apiFactory;
     }
 
     public ApiService getApiService(){

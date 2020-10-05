@@ -1,6 +1,8 @@
 package com.example.gsonretrofitrxjava.screens;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,37 +25,53 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class EmployeeListActivity extends AppCompatActivity implements EmployeeListView {
+public class EmployeeListActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     EmployeeAdapter employeeAdapter;
-    EmployeeListPresenter presenter;
+    EmployeeViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recyclerView);
-        presenter = new EmployeeListPresenter(this);
         employeeAdapter = new EmployeeAdapter();
         employeeAdapter.setEmployees(new ArrayList<Employee>());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(employeeAdapter);
+        viewModel = new ViewModelProvider(this).get(EmployeeViewModel.class);
 
-        presenter.loadData();
+        viewModel.getEmployees().observe(this, new Observer<List<Employee>>() {
+            @Override
+            public void onChanged(List<Employee> employees) {
+                employeeAdapter.setEmployees(employees);
+            }
+        });
+        viewModel.getErrors().observe(this, new Observer<Throwable>() {
+            @Override
+            public void onChanged(Throwable throwable) {
+                if (throwable != null) {
+                    Toast.makeText(EmployeeListActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                    viewModel.clearErrors();
+                }
+            }
+        });
+        viewModel.loadData();
+
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.disposeDisposable();
     }
 
-    public void showData(List<Employee> employees){
+    public void showData(List<Employee> employees) {
         employeeAdapter.setEmployees(employees);
     }
-    public void showError(Throwable throwable){
+
+    public void showError(Throwable throwable) {
         Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
     }
 }
